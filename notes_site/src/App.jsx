@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './App.css';
 
 function App() {
     const [title, setTitle] = useState('');
@@ -20,32 +21,47 @@ function App() {
     }
 
     return (
-        <div>
-            <h1>Мои заметки</h1>
-            <input
-                type='text'
-                placeholder='Заголовок'
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            ></input>
-            <textarea
-                placeholder='Текст'
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-            >
-            </textarea>
-            <button onClick={addNotes}>добавить заметку</button>
-            <hr></hr>
-            <h1>Список заметок кол-во:{notes.length}</h1>
-            {notes.map(note =>
-                <div key={note.id}>
-                    <h1>{note.title}</h1>
-                    <p>{note.text}</p>
-                    <p>{note.createdAt}</p>
-                </div>
-            )}
-        </div>
+        <div className="app">
+            <h1 className="app__title">Мои заметки</h1>
 
+            <div className="form">
+                <input
+                    type="text"
+                    placeholder="Заголовок"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="form__input"
+                />
+                <textarea
+                    placeholder="Текст"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className="form__textarea"
+                />
+                <button onClick={addNotes} className="form__button">
+                    Добавить заметку
+                </button>
+            </div>
+
+            <hr className="divider" />
+
+            <div className="stats">
+                <h2 className="stats__title">
+                    Список заметок
+                    <span className="stats__count">{notes.length}</span>
+                </h2>
+            </div>
+
+            <div className="notes-list">
+                {notes.map(note => (
+                    <div key={note.id} className="note-card">
+                        <h3 className="note-card__title">{note.title || 'Без заголовка'}</h3>
+                        <p className="note-card__text">{note.text}</p>
+                        <time className="note-card__date">{note.createdAt}</time>
+                    </div>
+                ))}
+            </div>
+        </div>
     )
 }
 
