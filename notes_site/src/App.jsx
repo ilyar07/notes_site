@@ -1,13 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
-    const [notes, setNotes] = useState([]);
     const [search, setSearch] = useState('');
 
+    // загрузка заметок из localstorage
+    const [notes, setNotes] = useState(() => {
+        const saved = localStorage.getItem('notes');
+        return saved ? JSON.parse(saved) : [];
+    });
 
+    // сохранение заметок в localstorage
+    useEffect(() => {
+        localStorage.setItem('notes', JSON.stringify(notes))
+    }, [notes])
+
+
+    // метод для добавления заметок
     const addNotes = () => {
         if (!title && !text) return;
         const newNote = {
@@ -22,16 +33,15 @@ function App() {
         setText('');
     }
 
+    // заметки отфлитрованые по содержанию строки search
     const filterNotes = notes.filter(note => {
         const lowerSearch = search.toLowerCase();
         return note.title.toLowerCase().includes(lowerSearch) || note.text.toLowerCase().includes(lowerSearch);
     })
 
-
     return (
         <div className="app">
             <h1 className="app__title">Мои заметки</h1>
-
             <div className="form">
                 <div className="search">
                 <input
@@ -65,7 +75,7 @@ function App() {
             <div className="stats">
                 <h2 className="stats__title">
                     Список заметок
-                    <span className="stats__count">{notes.length}</span>
+                    <span className="stats__count">{filterNotes.length}</span>
                 </h2>
             </div>
 
