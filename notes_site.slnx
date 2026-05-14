@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="notes_site/notes_site.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>
