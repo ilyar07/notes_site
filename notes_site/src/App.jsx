@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
-import { createNote, deleteNote } from './services/noteCRUD';
+import { createNote, deleteNote, updateNote } from './services/noteCRUD';
 import NoteCard from './components/NoteCard';
 import NoteForm from './components/NoteForm';
 import SearchBar from './components/SearchBar';
@@ -10,6 +10,7 @@ function App() {
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [search, setSearch] = useState('');
+    const [editingId, setEditingId] = useState(null);
     const [notes, setNotes] = useLocalStorage('notes', []);
 
     // метод для кнопки добавить заметку
@@ -30,6 +31,39 @@ function App() {
         }
     }
 
+    //общий обработчик (решает обновить или создать)
+    const handleSubmit = () => {
+        if (editingId) {
+            handleUpdateNote();
+        } else {
+            addNotes();
+        }
+    }
+
+    // метод для кнопки начать редактирование заметки
+    const handleStartUpdate = (note) => {
+        setTitle(note.title);
+        setText(note.text);
+        setEditingId(note.id);
+    }
+
+    // метод для кнопки отменить редактирование заметки
+    const handleCanselUpdate = () => {
+        setTitle('');
+        setText('');
+        setEditingId(null);
+    }
+
+    // метод для кнопки сохранить изменения заметки
+    const handleUpdateNote = () => {
+        if (!title && !text) return 
+        const updatedNotes = updateNote(editingId, title, text);
+        setNotes(updatedNotes);
+        setTitle('');
+        setText('');
+        setEditingId(null);
+    }
+
     // заметки отфлитрованые по содержанию строки search
     const filterNotes = notes.filter(note => {
         const lowerSearch = search.toLowerCase();
@@ -45,7 +79,9 @@ function App() {
                 setTitle={setTitle}
                 text={text}
                 setText={setText}
-                onSubmit={addNotes}
+                onSubmit={handleSubmit}
+                onCancel={handleCanselUpdate}
+                isEditing={!!editingId}
             />
             <hr className="divider" />
             
@@ -62,6 +98,7 @@ function App() {
                         key={note.id}
                         note={note}
                         onDelete={handleDeleteNote}
+                        onEdit={handleStartUpdate}
                     />
                 ))}
             </div>

@@ -49,3 +49,15 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
+.form__buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.form__button--cancel {
+    background: #718096;
+}
+
+    .form__button--cancel:hover {
+        background: #4a5568;
+    }

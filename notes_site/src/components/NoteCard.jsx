@@ -1,16 +1,28 @@
 import '../styles/NoteCard.css';
 
 // компонент заметки
-function NoteCard({ note, onDelete }) {
+function NoteCard({ note, onEdit, onDelete }) {
     return (
         <div key={note.id} className="note-card">
-            <h3 className="note-card__title">{note.title || 'Без заголовка'}</h3>
-            <button
-                onClick={() => onDelete(note.id)}
-                className="note-card__delete"
-            >🗑️</button>
+            <div className="note-card__header">  
+                <h3 className="note-card__title">{note.title || 'Без заголовка'}</h3>
+                <div className='note-card__actions'>
+                    <button
+                        onClick={() => onEdit(note)}
+                        className="note-card__edit"
+                    >✏️</button>
+
+                    <button
+                        onClick={() => onDelete(note.id)}
+                        className="note-card__delete"
+                    >🗑️</button>
+                </div>
+            </div>
             <p className="note-card__text">{note.text}</p>
-            <time className="note-card__date">{note.createdAt}</time>
+            <time className="note-card__date">
+                {note.createdAt}
+                {note.updatedAt && (` Изменено: ${note.updatedAt}`)}
+            </time>
         </div>
     )
 }

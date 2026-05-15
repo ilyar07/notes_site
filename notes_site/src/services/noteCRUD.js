@@ -21,6 +21,23 @@ export const getNotes = () => {
     return saved ? JSON.parse(saved) : [];
 }
 
+// (UPDATE) обновление заметки
+export const updateNote = (id, title, text) => {
+    const saved = getNotes();
+    const updatedNotes = saved.map((note) => {
+        return note.id === id ?
+        {
+            ...note,
+            title: title,
+            text: text,
+            updatedAt: new Date().toLocaleString()
+        }
+        : note
+    })
+
+    return updatedNotes;
+}
+
 // (DELETE) удаление заметки
 export const deleteNote = (id) => {
     const saved = getNotes();
