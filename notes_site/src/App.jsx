@@ -17,7 +17,6 @@ function App() {
         localStorage.setItem('notes', JSON.stringify(notes))
     }, [notes])
 
-
     // метод для добавления заметок
     const addNotes = () => {
         if (!title && !text) return;
@@ -31,6 +30,13 @@ function App() {
         setNotes([newNote, ...notes]);
         setTitle('');
         setText('');
+    }
+
+    // метод удаления заметки
+    const deleteNotes = (id) => {
+        if (confirm('Удалить заметку?')) {
+            setNotes(notes.filter((note) => note.id !== id));
+        }
     }
 
     // заметки отфлитрованые по содержанию строки search
@@ -83,6 +89,10 @@ function App() {
                 {filterNotes.map(note => (
                     <div key={note.id} className="note-card">
                         <h3 className="note-card__title">{note.title || 'Без заголовка'}</h3>
+                        <button
+                            onClick={() => deleteNotes(note.id)}
+                            className="note-card__delete"
+                        >🗑️</button>
                         <p className="note-card__text">{note.text}</p>
                         <time className="note-card__date">{note.createdAt}</time>
                     </div>
