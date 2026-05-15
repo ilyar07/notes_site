@@ -1,41 +1,32 @@
 import { useState, useEffect } from 'react';
-import './App.css';
+import useLocalStorage from './hooks/useLocalStorage';
+import { createNote, deleteNote } from './services/noteCRUD';
+import NoteCard from './components/NoteCard';
+import NoteForm from './components/NoteForm';
+import SearchBar from './components/SearchBar';
+import './styles/App.css';
 
 function App() {
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [search, setSearch] = useState('');
+    const [notes, setNotes] = useLocalStorage('notes', []);
 
-    // загрузка заметок из localstorage
-    const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('notes');
-        return saved ? JSON.parse(saved) : [];
-    });
-
-    // сохранение заметок в localstorage
-    useEffect(() => {
-        localStorage.setItem('notes', JSON.stringify(notes))
-    }, [notes])
-
-    // метод для добавления заметок
+    // метод для кнопки добавить заметку
     const addNotes = () => {
         if (!title && !text) return;
-        const newNote = {
-            id: Date.now(),
-            title: title,
-            text: text,
-            createdAt: new Date().toLocaleString()
-        }
+        const updatedNotes = createNote(title, text);
 
-        setNotes([newNote, ...notes]);
+        setNotes(updatedNotes);
         setTitle('');
         setText('');
     }
 
-    // метод удаления заметки
-    const deleteNotes = (id) => {
+    // метод для кнопки удаление заметки
+    const handleDeleteNote = (id) => {
         if (confirm('Удалить заметку?')) {
-            setNotes(notes.filter((note) => note.id !== id));
+            const updatedNotes = deleteNote(id);
+            setNotes(updatedNotes);
         }
     }
 
@@ -48,36 +39,16 @@ function App() {
     return (
         <div className="app">
             <h1 className="app__title">Мои заметки</h1>
-            <div className="form">
-                <div className="search">
-                <input
-                    type="text"
-                    placeholder="Поиск по заметкам..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="search__input"
-                    />
-                </div>
-                <input
-                    type="text"
-                    placeholder="Заголовок"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="form__input"
-                />
-                <textarea
-                    placeholder="Текст"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    className="form__textarea"
-                />
-                <button onClick={addNotes} className="form__button">
-                    Добавить заметку
-                </button>
-            </div>
-
+            <SearchBar search={search} setSearch={setSearch} />
+            <NoteForm
+                title={title}
+                setTitle={setTitle}
+                text={text}
+                setText={setText}
+                onSubmit={addNotes}
+            />
             <hr className="divider" />
-
+            
             <div className="stats">
                 <h2 className="stats__title">
                     Список заметок
@@ -87,15 +58,11 @@ function App() {
 
             <div className="notes-list">
                 {filterNotes.map(note => (
-                    <div key={note.id} className="note-card">
-                        <h3 className="note-card__title">{note.title || 'Без заголовка'}</h3>
-                        <button
-                            onClick={() => deleteNotes(note.id)}
-                            className="note-card__delete"
-                        >🗑️</button>
-                        <p className="note-card__text">{note.text}</p>
-                        <time className="note-card__date">{note.createdAt}</time>
-                    </div>
+                    <NoteCard
+                        key={note.id}
+                        note={note}
+                        onDelete={handleDeleteNote}
+                    />
                 ))}
             </div>
         </div>
