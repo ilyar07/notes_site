@@ -6,6 +6,7 @@ export const createNote = (title, text) => {
     const saved = getNotes();
     const newNote = {
         id: Date.now(),
+        type: 'text',
         title: title,
         text: text,
         createdAt: new Date().toLocaleString()

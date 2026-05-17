@@ -1,0 +1,103 @@
+.checklist-viewer__label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.checklist-viewer__checkbox-input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #667eea; 
+}
+.checklist-viewer {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.checklist-viewer__items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.checklist-viewer__item {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.checklist-viewer__text--completed {
+    text-decoration: line-through;
+    color: #a0aec0;
+}
+
+.checklist-viewer__empty {
+    text-align: center;
+    color: #a0aec0;
+    padding: 16px;
+    font-size: 14px;
+}
+
+.checklist-viewer__expand {
+    background: none;
+    border: none;
+    color: #667eea;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 0;
+    margin-bottom: 8px;
+}
+
+    .checklist-viewer__expand:hover {
+        text-decoration: underline;
+    }
+
+.checklist-viewer__add {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.checklist-viewer__input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+}
+
+    .checklist-viewer__input:focus {
+        border-color: #667eea;
+    }
+
+.checklist-viewer__add-btn {
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+    .checklist-viewer__add-btn:hover {
+        background: #5a67d8;
+    }
+
+.checklist-viewer__progress {
+    font-size: 11px;
+    color: #718096;
+    text-align: right;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}

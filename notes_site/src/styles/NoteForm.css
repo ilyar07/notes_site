@@ -61,3 +61,40 @@
     .form__button--cancel:hover {
         background: #4a5568;
     }
+.type-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.type-selector__btn {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.type-selector__btn--active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+.checklist-hint {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+}
+
+    .checklist-hint small {
+        display: block;
+        margin-top: 8px;
+        color: #a0aec0;
+    }
