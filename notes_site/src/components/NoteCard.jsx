@@ -80,7 +80,8 @@ function NoteCard({ note, onEdit,
 
             {/* если текстовая заметка отображаем текст*/}
             {!isChecklist && (
-                <p className="note-card__text">{note.text}</p>
+
+                <p className="note-card__text" style={{ color: getTextColor(note.color) }}>{note.text}</p>
             )}
 
             {/* если чек лист выводим задачи*/}
