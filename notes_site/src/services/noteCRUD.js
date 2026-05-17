@@ -9,6 +9,7 @@ export const createNote = (title, text) => {
         type: 'text',
         title: title,
         text: text,
+        pinned: false,
         createdAt: new Date().toLocaleString()
     }
 

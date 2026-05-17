@@ -30,7 +30,7 @@ function App() {
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
 
 
-    // ------------------------------------общие методы для создания и удаления заметок-----------------------
+    // ------------------------------------общие методы для создания, удаления заметок и закрепления заметок-----------------------
 
 
     //сбросить форму ввода
@@ -68,6 +68,20 @@ function App() {
         }
     }
 
+    //метод для кнопки закрепить заметку
+    const handleTogglePin = (id, noteType) => {
+        if (noteType === 'text') {
+            const updatedNotes = notes.map(note => note.id === id ? { ...note, pinned: !note.pinned } : note);
+            setNotes(updatedNotes);
+        } else {
+            const updatedChecklist = checklists.map(checklist => checklist.id === id ? {
+                ...checklist,
+                pinned: !checklist.pinned
+            } : checklist)
+            setChecklists(updatedChecklist);
+        }
+    }
+
 
     //------------------------------------методы для редактирования заметок--------------------------------------
 
@@ -90,7 +104,7 @@ function App() {
     }
 
     // метод для кнопки отменить редактирование заметки
-    const handleCanсelUpdate = () => {
+    const handleCancelUpdate = () => {
         resetForm();
     }
 
@@ -144,12 +158,19 @@ function App() {
     //-------------------------------------------фильтрация---------------------------------------------------------
 
 
-    // заметки отфлитрованые по содержанию строки search
+    // заметки отфлитрованые по содержанию строки search и по закрепу
     const getFilteredNotes = () => {
-        const allNotes = [...notes, ...checklists].sort((a, b) => b.id - a.id);
+        const allNotes = [...notes, ...checklists];
+        const validNotes = allNotes.filter(note => note !== null);
         const lowerSearch = search.toLowerCase();
 
-        return allNotes.filter(note => {
+        const sortedNotes = validNotes.sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;  
+            if (!a.pinned && b.pinned) return 1; 
+            return b.id - a.id; 
+        });
+
+        return sortedNotes.filter(note => {
             if (note.type === 'text') {
                 return note.title?.toLowerCase().includes(lowerSearch) ||
                     note.text?.toLowerCase().includes(lowerSearch);
@@ -177,7 +198,7 @@ function App() {
                 type={type}             
                 setType={setType}           
                 onSubmit={handleSubmit}
-                onCancel={handleCanсelUpdate}
+                onCancel={handleCancelUpdate}
                 isEditing={!!editingId}
             />
             <hr className="divider" />
@@ -202,6 +223,7 @@ function App() {
                         onAddTask={handleAddTask}
                         onDeleteTask={handleDeleteTask}
                         onUpdateTask={handleUpdateTask}
+                        onTogglePin={handleTogglePin}
                     />
                 ))}
             </div>

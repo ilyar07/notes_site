@@ -13,6 +13,7 @@ export const createChecklist = (title, items=[]) => {
         type: 'checklist',
         title: title,
         items: items,
+        pinned: false,
         createdAt: new Date().toLocaleString()
     }
 

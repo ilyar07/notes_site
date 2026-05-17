@@ -7,7 +7,8 @@ function NoteCard({ note, onEdit,
     onToggleTask,
     onAddTask,
     onDeleteTask,
-    onUpdateTask
+    onUpdateTask,
+    onTogglePin
     }) {
     const isChecklist = note.type === 'checklist';
 
@@ -17,12 +18,20 @@ function NoteCard({ note, onEdit,
             {/*заголовок*/}
             <div className="note-card__header">  
                 <h3 className="note-card__title">
+                    {note.pinned && '📌 '}
                     {isChecklist ? '☑️ ' : '📝 '}
                     {note.title || 'Без заголовка'}
                 </h3>
 
-                {/*кнопки удалить и редактировать*/}
+                {/*кнопки удалить, редактировать и запинить*/}
                 <div className='note-card__actions'>
+                    <button
+                        onClick={() => onTogglePin(note.id, note.type)}
+                        className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
+                        title={note.pinned ? 'Открепить' : 'Закрепить'}
+                    >
+                        📌
+                    </button>
                     <button
                         onClick={() => onEdit(note)}
                         className="note-card__edit"
