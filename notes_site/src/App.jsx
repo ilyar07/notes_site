@@ -8,8 +8,11 @@ import {
 import {
     createChecklist,
     deleteChecklist,
+    updateChecklist,
     toggleTaskInChecklist,
-    addTaskToChecklist
+    addTaskToChecklist,
+    deleteTaskFromChecklist,
+    updateTaskInChecklist
 } from './services/checklistCRUD';
 import NoteCard from './components/NoteCard';
 import NoteForm from './components/NoteForm';
@@ -82,23 +85,37 @@ function App() {
     const handleStartUpdate = (note) => {
         setTitle(note.title);
         setText(note.type === 'text' ? note.text : '');
+        setType(note.type);
         setEditingId(note.id);
     }
 
     // метод для кнопки отменить редактирование заметки
-    const handleCanselUpdate = () => {
+    const handleCanсelUpdate = () => {
         resetForm();
     }
 
     // метод для кнопки сохранить изменения заметки
     const handleUpdateNote = () => {
-        if (!title && !text) return 
-        const updatedNotes = updateNote(editingId, title, text);
-        setNotes(updatedNotes);
-        setTitle('');
-        setText('');
-        setEditingId(null);
+        if (type === 'text') {
+            if (!title && !text) return;
+            const updatedNotes = updateNote(editingId, title, text);
+            setNotes(updatedNotes);
+        } else {
+            if (!title) return;
+            const checklist = checklists.find(c => c.id === editingId);
+            if (checklist) {
+                const updatedChecklists = updateChecklist(editingId, title);
+                setChecklists(updatedChecklists)
+            }
+        }
+        resetForm();
     }
+
+    // метод для кнопки редактировать заметку
+    const handleUpdateTask = (checklistId, taskId, newText) => {
+        const updatedChecklists = updateTaskInChecklist(checklistId, taskId, newText);
+        setChecklists(updatedChecklists);
+    };
 
 
     //---------------------------------------------методы для работы с задачами в чек листах-------------------------------
@@ -115,6 +132,13 @@ function App() {
         const updatedChecklists = addTaskToChecklist(checklistId, taskText);
         setChecklists(updatedChecklists);
     };
+
+    const handleDeleteTask = (checklistId, taskId) => {
+        if (confirm('Удалить задачу?')) {
+            const updatedChecklists = deleteTaskFromChecklist(checklistId, taskId);
+            setChecklists(updatedChecklists);
+        }
+    }
 
 
     //-------------------------------------------фильтрация---------------------------------------------------------
@@ -153,7 +177,7 @@ function App() {
                 type={type}             
                 setType={setType}           
                 onSubmit={handleSubmit}
-                onCancel={handleCanselUpdate}
+                onCancel={handleCanсelUpdate}
                 isEditing={!!editingId}
             />
             <hr className="divider" />
@@ -176,6 +200,8 @@ function App() {
                         onEdit={handleStartUpdate}
                         onToggleTask={handleToggleTask}
                         onAddTask={handleAddTask}
+                        onDeleteTask={handleDeleteTask}
+                        onUpdateTask={handleUpdateTask}
                     />
                 ))}
             </div>

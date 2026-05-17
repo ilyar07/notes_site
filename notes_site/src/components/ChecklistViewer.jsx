@@ -2,12 +2,18 @@ import { useState } from 'react';
 import '../styles/ChecklistViewer.css';
 
 // компонент для отображения всех задач в чек листе кнопки показать еще и кол-ва выполненых задач
-function ChecklistViewer({ items, onToggleTask, onAddTask }) {
+function ChecklistViewer({ items, onToggleTask, onAddTask, onDeleteTask, onUpdateTask }) {
     // нужно ли показывать все
     const [expanded, setExpanded] = useState(false);
 
     // текст новой задачи
     const [newTaskText, setNewTaskText] = useState('');
+
+    // айди редактируемой задачи
+    const [editingTaskId, setEditingTaskId] = useState(null);
+
+    // новый текст для редактируемой задачи
+    const [editingTaskText, setEditingTaskText] = useState('');
 
     // кол-во выполненых
     const completedCount = items.filter(i => i.completed).length;
@@ -25,6 +31,26 @@ function ChecklistViewer({ items, onToggleTask, onAddTask }) {
         setNewTaskText('');
     };
 
+    // начало редактирования задачи
+    const startEditTask = (task) => {
+        setEditingTaskId(task.id);
+        setEditingTaskText(task.text);
+    };
+
+    // сохранить отредактированную задачу
+    const saveEditTask = () => {
+        if (!editingTaskText.trim()) return;
+        onUpdateTask(editingTaskId, editingTaskText);
+        setEditingTaskId(null);
+        setEditingTaskText('');
+    };
+
+    // отменить редактирование задачи 
+    const cancelEditTask = () => {
+        setEditingTaskId(null);
+        setEditingTaskText('');
+    };
+
     return (
         <div className='checklist-viewer'>
 
@@ -40,20 +66,42 @@ function ChecklistViewer({ items, onToggleTask, onAddTask }) {
 
                 {visibleItems.map(item => (
                     <div key={item.id} className='checklist-viewer__item'>
-                        <label className="checklist-viewer__label">
 
-                            {/*чек бокс*/}
-                            <input
-                                className="checklist-viewer__checkbox-input"
-                                type='checkbox'
-                                checked={item.completed}
-                                onChange={() => onToggleTask(item.id)}
-                            />
-                            {/*текст задачи*/}
-                            <span className={item.completed ? 'checklist-viewer__text--completed' : ''}>
-                                {item.text}
-                            </span>
-                        </label>
+                        {editingTaskId === item.id ? (
+
+                            // режим редактирования
+                            <div className="checklist-viewer__edit-mode">
+                                <input
+                                    type="text"
+                                    value={editingTaskText}
+                                    onChange={(e) => setEditingTaskText(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && saveEditTask()}
+                                    className="checklist-viewer__edit-input"
+                                    autoFocus
+                                />
+                                <button onClick={saveEditTask} className="checklist-viewer__edit-save">✓</button>
+                                <button onClick={cancelEditTask} className="checklist-viewer__edit-cancel">✕</button>
+                            </div>
+                        ) : (
+                            // обычный режим
+                            <>
+                                <label className="checklist-viewer__label">
+                                    <input
+                                        className="checklist-viewer__checkbox-input"
+                                        type='checkbox'
+                                        checked={item.completed}
+                                        onChange={() => onToggleTask(item.id)}
+                                    />
+                                    <span className={item.completed ? 'checklist-viewer__text--completed' : ''}>
+                                        {item.text}
+                                    </span>
+                                </label>
+                                <div className="checklist-viewer__task-actions">
+                                    <button onClick={() => startEditTask(item)} className="checklist-viewer__edit-btn">✏️</button>
+                                    <button onClick={() => onDeleteTask(item.id)} className="checklist-viewer__delete-btn">🗑️</button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 ))}
             </div>

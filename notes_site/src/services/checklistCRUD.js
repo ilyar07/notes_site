@@ -26,9 +26,13 @@ export const getChecklists = () => {
 }
 
 // (UPDATE) обновить чек лист (заголок, весь список задач)
-export const updateChecklist = (id, title, item) => {
+export const updateChecklist = (id, title) => {
     const saved = getChecklists();
-    return saved.map((checklist) => checklist.id === id ? { ...checklist, title: title, items: item } : checklist);
+    return saved.map((checklist) => checklist.id === id ? {
+        ...checklist,
+        title: title,
+        updatedAt: new Date().toLocaleString()
+    } : checklist);
 }
 
 // (DELETE) удалить чек лист
@@ -66,7 +70,10 @@ export const toggleTaskInChecklist = (checklistId, taskId) => {
     const saved = getChecklists();
     const checklist = saved.find(c => c.id === checklistId);
 
-    const updatedItems = checklist.items.map((task) => task.id === taskId ? { ...task, completed: !task.completed } : task);
+    const updatedItems = checklist.items.map((task) => task.id === taskId ? {
+        ...task,
+        completed: !task.completed
+    } : task);
     const updatedChecklist = {
         ...checklist,
         items: updatedItems,
@@ -82,6 +89,23 @@ export const deleteTaskFromChecklist = (checklistId, taskId) => {
     const checklist = saved.find(c => c.id === checklistId);
 
     const updatedItems = checklist.items.filter((t) => t.id !== taskId);
+    const updatedChecklist = {
+        ...checklist,
+        items: updatedItems,
+        updatedAt: new Date().toLocaleString()
+    }
+
+    return saved.map(c => c.id === checklistId ? updatedChecklist : c);
+}
+
+// обновить задачу из таск листа
+export const updateTaskInChecklist = (checklistId, taskId, newTextTask) => {
+    const saved = getChecklists();
+    const checklist = saved.find(c => c.id === checklistId);
+    const updatedItems = checklist.items.map(task => task.id === taskId ? {
+        ...task,
+        text: newTextTask
+    } : task);
     const updatedChecklist = {
         ...checklist,
         items: updatedItems,

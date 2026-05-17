@@ -28,8 +28,10 @@
 
 .checklist-viewer__item {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 4px 0;
+    gap: 10px;
 }
 
 .checklist-viewer__text--completed {
@@ -101,3 +103,84 @@
     padding-top: 8px;
     border-top: 1px solid #e2e8f0;
 }
+.checklist-viewer__delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #718096;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+    .checklist-viewer__delete-btn:hover {
+        background: #fee2e2;
+        color: #e53e3e;
+    }
+.checklist-viewer__task-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.checklist-viewer__edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #718096;
+    transition: all 0.2s;
+}
+
+    .checklist-viewer__edit-btn:hover {
+        background: #e2e8f0;
+        color: #4a5568;
+    }
+
+.checklist-viewer__edit-mode {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.checklist-viewer__edit-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.checklist-viewer__edit-save,
+.checklist-viewer__edit-cancel {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.checklist-viewer__edit-save {
+    background: #48bb78;
+    color: white;
+}
+
+    .checklist-viewer__edit-save:hover {
+        background: #38a169;
+    }
+
+.checklist-viewer__edit-cancel {
+    background: #f56565;
+    color: white;
+}
+
+    .checklist-viewer__edit-cancel:hover {
+        background: #e53e3e;
+    }

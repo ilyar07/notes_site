@@ -2,7 +2,13 @@ import ChecklistViewer from './ChecklistViewer';
 import '../styles/NoteCard.css';
 
 // компонент заметки
-function NoteCard({ note, onEdit, onDelete, onToggleTask, onAddTask }) {
+function NoteCard({ note, onEdit,
+    onDelete,
+    onToggleTask,
+    onAddTask,
+    onDeleteTask,
+    onUpdateTask
+    }) {
     const isChecklist = note.type === 'checklist';
 
     return (
@@ -40,6 +46,8 @@ function NoteCard({ note, onEdit, onDelete, onToggleTask, onAddTask }) {
                     items={note.items || []}
                     onToggleTask={(taskId) => onToggleTask(note.id, taskId)}
                     onAddTask={(taskText) => onAddTask(note.id, taskText)}
+                    onDeleteTask={(taskId) => onDeleteTask(note.id, taskId)}
+                    onUpdateTask={(taskId, newText) => onUpdateTask(note.id, taskId, newText)}
                 />
             )}
             {/*время создания/изменения*/}
