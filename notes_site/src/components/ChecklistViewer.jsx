@@ -79,8 +79,16 @@ function ChecklistViewer({ items, onToggleTask, onAddTask, onDeleteTask, onUpdat
                                     className="checklist-viewer__edit-input"
                                     autoFocus
                                 />
-                                <button onClick={saveEditTask} className="checklist-viewer__edit-save">✓</button>
-                                <button onClick={cancelEditTask} className="checklist-viewer__edit-cancel">✕</button>
+                                <button
+                                    onClick={saveEditTask}
+                                    className="checklist-viewer__edit-save"
+                                    title='Сохранить'
+                                >✓</button>
+                                <button
+                                    onClick={cancelEditTask}
+                                    className="checklist-viewer__edit-cancel"
+                                    title='Отменить'
+                                >✕</button>
                             </div>
                         ) : (
                             // обычный режим
@@ -97,8 +105,16 @@ function ChecklistViewer({ items, onToggleTask, onAddTask, onDeleteTask, onUpdat
                                     </span>
                                 </label>
                                 <div className="checklist-viewer__task-actions">
-                                    <button onClick={() => startEditTask(item)} className="checklist-viewer__edit-btn">✏️</button>
-                                    <button onClick={() => onDeleteTask(item.id)} className="checklist-viewer__delete-btn">🗑️</button>
+                                        <button
+                                            onClick={() => startEditTask(item)}
+                                            className="checklist-viewer__edit-btn"
+                                            title='Редактировать'
+                                        >✏️</button>
+                                        <button
+                                            onClick={() => onDeleteTask(item.id)}
+                                            className="checklist-viewer__delete-btn"
+                                            title='Удалить'
+                                        >🗑️</button>
                                 </div>
                             </>
                         )}

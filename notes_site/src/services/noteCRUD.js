@@ -10,6 +10,7 @@ export const createNote = (title, text) => {
         title: title,
         text: text,
         pinned: false,
+        color: '#ffffff',
         createdAt: new Date().toLocaleString()
     }
 

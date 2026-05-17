@@ -30,7 +30,7 @@ function App() {
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
 
 
-    // ------------------------------------общие методы для создания, удаления заметок и закрепления заметок-----------------------
+    // ----------------общие методы для создания, удаления заметок, закрепления заметок и изменения цвета-------------
 
 
     //сбросить форму ввода
@@ -82,6 +82,22 @@ function App() {
         }
     }
 
+    // метод для замены цвета
+    const handleChangeColor = (id, type, color) => {
+        if (type === 'text') {
+            const updatedNotes = notes.map(note => note.id === id ?
+                { ...note, color: color } :
+                note
+            );
+            setNotes(updatedNotes);
+        } else {
+            const updatedChecklists = checklists.map(c => c.id === id ?
+                { ...c, color: color } :
+                c
+            );
+            setChecklists(updatedChecklists);
+        }
+    }
 
     //------------------------------------методы для редактирования заметок--------------------------------------
 
@@ -224,6 +240,7 @@ function App() {
                         onDeleteTask={handleDeleteTask}
                         onUpdateTask={handleUpdateTask}
                         onTogglePin={handleTogglePin}
+                        onChangeColor={handleChangeColor}
                     />
                 ))}
             </div>
