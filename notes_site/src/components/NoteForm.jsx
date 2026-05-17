@@ -18,14 +18,18 @@ function NoteForm({ title, setTitle,
                 <button
                     type="button"
                     className={`type-selector__btn ${type === 'text' ? 'type-selector__btn--active' : ''}`}
-                    onClick={() => setType('text')}
+                    onClick={() => !isEditing && setType('text')}
+                    disabled={isEditing}
+                    style={{ opacity: isEditing ? 0.6 : 1, cursor: isEditing ? 'not-allowed' : 'pointer' }}
                 >
                     📝 Текст
                 </button>
                 <button
                     type="button"
                     className={`type-selector__btn ${type === 'checklist' ? 'type-selector__btn--active' : ''}`}
-                    onClick={() => setType('checklist')}
+                    onClick={() => !isEditing && setType('checklist')}
+                    disabled={isEditing}
+                    style={{ opacity: isEditing ? 0.6 : 1, cursor: isEditing ? 'not-allowed' : 'pointer' }}
                 >
                     ☑️ Чек-лист
                 </button>
