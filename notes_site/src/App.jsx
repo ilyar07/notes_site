@@ -36,7 +36,7 @@ function App() {
 
 
 
-    // ----------общие методы для создания, удаления заметок, закрепления заметок, изменения цвета и смены приоритета-----------
+    // ----общие методы для создания, удаления заметок, закрепления заметок, изменения цвета, смены приоритета, дублирования------
 
 
     //сбросить форму ввода
@@ -118,6 +118,32 @@ function App() {
         }
     }
 
+    // метод для дублирования заметки
+    const handleDuplicateNote = (id, noteType) => {
+        if (noteType === 'text') {
+            const originalNote = notes.find(n => n.id === id);
+            if (originalNote) {
+                const duplicatedNote = {
+                    ...originalNote,
+                    id: Date.now(),
+                    title: `${originalNote.title} (копия)`,
+                    createdAt: new Date().toLocaleString()
+                };
+                setNotes([duplicatedNote, ...notes]);
+            }
+        } else {
+            const originalChecklist = checklists.find(c => c.id === id);
+            if (originalChecklist) {
+                const duplicatedChecklist = {
+                    ...originalChecklist,
+                    id: Date.now(),
+                    title: `${originalChecklist.title} (копия)`,
+                    createdAt: new Date().toLocaleString()
+                };
+                setChecklists([duplicatedChecklist, ...checklists]);
+            }
+        }
+    };
 
     //------------------------------------методы для удаления и добавления тэгов--------------------------------------
 
@@ -274,14 +300,45 @@ function App() {
             if (!a.pinned && b.pinned) return 1;
 
             // потом по выбранной сортировке
+
+            // по приоритету
             if (sortBy === 'priority-high') {
                 return (priorityOrder[b.priority || 'medium'] || 0) - (priorityOrder[a.priority || 'medium'] || 0);
             } else if (sortBy === 'priority-low') {
                 return (priorityOrder[a.priority || 'medium'] || 0) - (priorityOrder[b.priority || 'medium'] || 0);
+            // по дате создания
             } else if (sortBy === 'date-desc') {
                 return b.id - a.id;
             } else if (sortBy === 'date-asc') {
                 return a.id - b.id;
+            // по дате изменения
+            } else if (sortBy === 'updated-desc') {
+                const parseDate = (dateStr) => {
+                    if (!dateStr) return new Date(0);
+                    const [datePart, timePart] = dateStr.split(', ');
+                    const [day, month, year] = datePart.split('.');
+                    const [hours, minutes, seconds] = timePart.split(':');
+                    return new Date(year, month - 1, day, hours, minutes, seconds);
+                };
+                const dateA = a.updatedAt ? parseDate(a.updatedAt) : parseDate(a.createdAt);
+                const dateB = b.updatedAt ? parseDate(b.updatedAt) : parseDate(b.createdAt);
+                return dateB - dateA;
+            } else if (sortBy === 'updated-asc') {
+                const parseDate = (dateStr) => {
+                    if (!dateStr) return new Date(0);
+                    const [datePart, timePart] = dateStr.split(', ');
+                    const [day, month, year] = datePart.split('.');
+                    const [hours, minutes, seconds] = timePart.split(':');
+                    return new Date(year, month - 1, day, hours, minutes, seconds);
+                };
+                const dateA = a.updatedAt ? parseDate(a.updatedAt) : parseDate(a.createdAt);
+                const dateB = b.updatedAt ? parseDate(b.updatedAt) : parseDate(b.createdAt);
+                return dateA - dateB;
+            // по алфавиту
+            } else if (sortBy === 'alpha-asc') {
+                return (a.title || '').localeCompare(b.title || '', 'ru');
+            } else if (sortBy === 'alpha-desc') {
+                return (b.title || '').localeCompare(a.title || '', 'ru');
             }
             return b.id - a.id;
         });
@@ -303,8 +360,12 @@ function App() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="sort-select"
                 >
-                    <option value="date-desc">📅 Сначала новые</option>
-                    <option value="date-asc">📅 Сначала старые</option>
+                    <option value="date-desc">📅 Сначала новые (по созданию)</option>
+                    <option value="date-asc">📅 Сначала старые (по созданию)</option>
+                    <option value="updated-desc">🕐 Сначала новые (по изменению)</option>
+                    <option value="updated-asc">🕐 Сначала старые (по изменению)</option>
+                    <option value="alpha-asc">🔤 По алфавиту (А → Я)</option>
+                    <option value="alpha-desc">🔤 По алфавиту (Я → А)</option>
                     <option value="priority-high">🟥 Приоритет (высокий → низкий)</option>
                     <option value="priority-low">🟩 Приоритет (низкий → высокий)</option>
                 </select>
@@ -345,6 +406,7 @@ function App() {
                         note={note}
                         onDelete={handleDeleteNote}
                         onEdit={handleStartUpdate}
+                        onDuplicate={handleDuplicateNote}
 
                         onToggleTask={handleToggleTask}
                         onAddTask={handleAddTask}

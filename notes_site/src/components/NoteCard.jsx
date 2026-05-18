@@ -6,6 +6,7 @@ function NoteCard({
     note,
     onEdit,
     onDelete,
+    onDuplicate,
 
     onToggleTask,
     onAddTask,
@@ -65,8 +66,16 @@ function NoteCard({
                     {note.title || 'Без заголовка'}
                 </h3>
 
-                {/*кнопки удалить, редактировать, запинить и выбрать цвет*/}
+                {/*кнопки удалить, редактировать, запинить, выбрать цвет, дублировать*/}
                 <div className='note-card__actions'>
+
+                    <button
+                        onClick={() => onTogglePin(note.id, note.type)}
+                        className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
+                        title={note.pinned ? 'Открепить' : 'Закрепить'}
+                    >
+                        📌
+                    </button>
 
                     <label className="color-picker-label" title="Выбрать цвет">
                         <input
@@ -79,11 +88,11 @@ function NoteCard({
                     </label>
 
                     <button
-                        onClick={() => onTogglePin(note.id, note.type)}
-                        className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
-                        title={note.pinned ? 'Открепить' : 'Закрепить'}
+                        onClick={() => onDuplicate(note.id, note.type)}
+                        className="note-card__duplicate"
+                        title="Дублировать"
                     >
-                        📌
+                        🔄
                     </button>
 
                     <button
