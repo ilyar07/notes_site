@@ -30,9 +30,12 @@ function App() {
     const [notes, setNotes] = useLocalStorage('notes', []);
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
     const formRef = useRef(null);
-    const [sortBy, setSortBy] = useState('date-desc'); // date-desc, date-asc, priority-high, priority-low
+    // date-desc, date-asc, priority-high, priority-low, updated-desc, updated-asc, alpha-asc, alpha-desc
+    const [sortBy, setSortBy] = useState('date-desc'); 
     const [tagInputValue, setTagInputValue] = useState('');
     const [idShowTagInput, setIdShowTagInput] = useState(null) // id заметки у которой покозывать форму ввода нового тега
+    const [showOnlyPinned, setShowOnlyPinned] = useState(false);
+    const [filterType, setFilterType] = useState('all'); // 'all', 'text', 'checklist'
 
 
 
@@ -266,6 +269,7 @@ function App() {
         setChecklists(updatedChecklists);
     };
 
+    // метод для удаления задачи
     const handleDeleteTask = (checklistId, taskId) => {
         if (confirm('Удалить задачу?')) {
             const updatedChecklists = deleteTaskFromChecklist(checklistId, taskId);
@@ -291,6 +295,16 @@ function App() {
                 return note.title?.toLowerCase().includes(lowerSearch);
             }
         });
+
+        // фильтрация по закреплённым
+        if (showOnlyPinned) {
+            filtered = filtered.filter(note => note.pinned === true);
+        }
+
+        // фильтрация по типу
+        if (filterType !== 'all') {
+            filtered = filtered.filter(note => note.type === filterType);
+        }
 
         const priorityOrder = { high: 3, medium: 2, low: 1 };
 
@@ -348,27 +362,75 @@ function App() {
 
     const filteredNotes = getFilteredNotes();
 
+
     return (
         <div className="app">
             <h1 className="app__title" ref={formRef}>Мои заметки</h1>
 
             {/* выбор фильтрации */ }
-            <div className="sort-section">
-                <label className="sort-label">Сортировка:</label>
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="sort-select"
-                >
-                    <option value="date-desc">📅 Сначала новые (по созданию)</option>
-                    <option value="date-asc">📅 Сначала старые (по созданию)</option>
-                    <option value="updated-desc">🕐 Сначала новые (по изменению)</option>
-                    <option value="updated-asc">🕐 Сначала старые (по изменению)</option>
-                    <option value="alpha-asc">🔤 По алфавиту (А → Я)</option>
-                    <option value="alpha-desc">🔤 По алфавиту (Я → А)</option>
-                    <option value="priority-high">🟥 Приоритет (высокий → низкий)</option>
-                    <option value="priority-low">🟩 Приоритет (низкий → высокий)</option>
-                </select>
+            <div className="filters-panel">
+                <div className="filters-row">
+                    <label className="filter-checkbox">
+                        <input
+                            type="checkbox"
+                            checked={showOnlyPinned}
+                            onChange={(e) => setShowOnlyPinned(e.target.checked)}
+                        />
+                        📌 Только закреплённые
+                    </label>
+
+                    <div className="filter-type">
+                        <span className="filter-label">Тип:</span>
+                        <label className="filter-radio">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="all"
+                                checked={filterType === 'all'}
+                                onChange={() => setFilterType('all')}
+                            />
+                            Все
+                        </label>
+                        <label className="filter-radio">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="text"
+                                checked={filterType === 'text'}
+                                onChange={() => setFilterType('text')}
+                            />
+                            📝 Текст
+                        </label>
+                        <label className="filter-radio">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="checklist"
+                                checked={filterType === 'checklist'}
+                                onChange={() => setFilterType('checklist')}
+                            />
+                            ☑️ Чек-лист
+                        </label>
+                    </div>
+                </div>
+
+                <div className="sort-row">
+                    <span className="sort-label">🔽🔼 Сортировка:</span>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="sort-select"
+                    >
+                        <option value="date-desc">📅 Сначала новые (по созданию)</option>
+                        <option value="date-asc">📅 Сначала старые (по созданию)</option>
+                        <option value="updated-desc">🕐 Сначала новые (по изменению)</option>
+                        <option value="updated-asc">🕐 Сначала старые (по изменению)</option>
+                        <option value="alpha-asc">🔤 По алфавиту (А → Я)</option>
+                        <option value="alpha-desc">🔤 По алфавиту (Я → А)</option>
+                        <option value="priority-high">🟥 Приоритет (высокий → низкий)</option>
+                        <option value="priority-low">🟩 Приоритет (низкий → высокий)</option>
+                    </select>
+                </div>
             </div>
 
             {/* поиск по слову */ }

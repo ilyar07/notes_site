@@ -44,17 +44,6 @@ function NoteCard({
         return brightness < 128 ? '#ffffff' : '#1a202c';
     };
 
-    // функция для получения иконки приоритета
-    const getPriorityIcon = (priority) => {
-        switch (priority) {
-            case 'high': return '🟥';
-            case 'medium': return '🟨';
-            case 'low': return '🟩';
-            default: return '🟨';
-        }
-    };
-
-
     return (
         <div key={note.id} className="note-card" style={{ backgroundColor: note.color || '#ffffff' }}>
 

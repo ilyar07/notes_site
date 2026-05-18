@@ -72,13 +72,64 @@ body {
         font-size: 1rem;
     }
 
-.sort-section {
+.filters-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 15px;
+}
+
+.filter-checkbox {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    gap: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-type {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.filter-label {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    .filter-radio input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #667eea;
+    }
+
+.sort-row {
+    display: flex;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
-    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sort-label {
@@ -95,13 +146,9 @@ body {
     background: white;
     cursor: pointer;
     outline: none;
-    transition: all 0.2s ease;
+    min-width: 200px;
 }
 
     .sort-select:focus {
         box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
-    }
-
-    .sort-select:hover {
-        background: #f7fafc;
     }
