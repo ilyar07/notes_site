@@ -161,3 +161,134 @@
     font-size: 12px;
     color: #718096;
 }
+
+.note-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.note-card__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #4a5568;
+}
+
+.note-card__tag-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: #718096;
+    padding: 0 2px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+    .note-card__tag-delete:hover {
+        color: #e53e3e;
+        background: rgba(229, 62, 62, 0.1);
+        transform: scale(1.1);
+    }
+
+    .note-card__tag-delete:active {
+        transform: scale(0.95);
+    }
+
+.note-card__tag-add {
+    background: #e2e8f0;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #4a5568;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+    .note-card__tag-add:hover {
+        background: #cbd5e0;
+        transform: scale(1.05);
+    }
+
+    .note-card__tag-add:active {
+        transform: scale(0.95);
+    }
+
+.note-card__tag-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.note-card__tag-input {
+    padding: 4px 8px;
+    border: 1px solid #667eea;
+    border-radius: 20px;
+    font-size: 12px;
+    outline: none;
+    width: 120px;
+    background: white;
+}
+
+    .note-card__tag-input:focus {
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    }
+
+.note-card__tag-add-btn {
+    background: #48bb78;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    color: white;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+}
+
+    .note-card__tag-add-btn:hover {
+        background: #38a169;
+        transform: scale(1.05);
+    }
+
+    .note-card__tag-add-btn:active {
+        transform: scale(0.95);
+    }
+
+.note-card__tag-cancel-btn {
+    background: #f56565;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    color: white;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+}
+
+    .note-card__tag-cancel-btn:hover {
+        background: #e53e3e;
+        transform: scale(1.05);
+    }
+
+    .note-card__tag-cancel-btn:active {
+        transform: scale(0.95);
+    }

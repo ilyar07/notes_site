@@ -11,7 +11,8 @@ export const createNote = (title, text, priority) => {
         text: text,
         pinned: false,
         color: '#ffffff',
-        priority: priority || 'medium', 
+        priority: priority || 'medium',
+        tags: [],
         createdAt: new Date().toLocaleString()
     }
 

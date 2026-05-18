@@ -2,15 +2,27 @@ import ChecklistViewer from './ChecklistViewer';
 import '../styles/NoteCard.css';
 
 // компонент заметки
-function NoteCard({ note, onEdit,
+function NoteCard({
+    note,
+    onEdit,
     onDelete,
+
     onToggleTask,
     onAddTask,
     onDeleteTask,
     onUpdateTask,
+
     onTogglePin,
     onChangeColor,
-    onChangePriority
+    onChangePriority,
+
+    onAddTag,
+    onDeleteTag,
+    idShowTagInput,
+    setIdShowTagInput,
+    tagInputValue,
+    setTagInputValue
+
     }) {
     const isChecklist = note.type === 'checklist';
 
@@ -127,6 +139,51 @@ function NoteCard({ note, onEdit,
                         <option value="low">🟩 Низкий</option>
                     </select>
                 </div>
+            </div>
+
+            {/* ТЭГИ */ }
+            <div className="note-card__tags">
+                {(note.tags || []).map(tag => (
+                    <span key={tag} className="note-card__tag">
+                        🏷️ {tag}
+                        <button
+                            onClick={() => onDeleteTag(note.id, note.type, tag)}
+                            className="note-card__tag-delete"
+                        >✕</button>
+                    </span>
+                ))}
+
+                {idShowTagInput === note.id ? (
+                    <div className="note-card__tag-input-wrapper">
+                        <input
+                            type="text"
+                            placeholder="Название тэга"
+                            value={tagInputValue}
+                            onChange={(e) => setTagInputValue(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && onAddTag(note.id, note.type, tagInputValue)}
+                            className="note-card__tag-input"
+                            autoFocus
+                        />
+                        <button
+                            onClick={() => onAddTag(note.id, note.type, tagInputValue)}
+                            className="note-card__tag-add-btn"
+                        >✓</button>
+                        <button
+                            onClick={() => {
+                                setIdShowTagInput(null);
+                                setTagInputValue('');
+                            }}
+                            className="note-card__tag-cancel-btn"
+                        >✕</button>
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => setIdShowTagInput(note.id)}
+                        className="note-card__tag-add"
+                    >
+                        + Добавить тэг
+                    </button>
+                )}
             </div>
         </div>
     )

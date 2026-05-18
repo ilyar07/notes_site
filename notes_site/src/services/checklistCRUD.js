@@ -16,6 +16,7 @@ export const createChecklist = (title, items=[], priority) => {
         pinned: false,
         color: '#ffffff',
         priority: priority || 'medium', 
+        tags: [],
         createdAt: new Date().toLocaleString()
     }
 

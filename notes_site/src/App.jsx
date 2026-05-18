@@ -31,6 +31,8 @@ function App() {
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
     const formRef = useRef(null);
     const [sortBy, setSortBy] = useState('date-desc'); // date-desc, date-asc, priority-high, priority-low
+    const [tagInputValue, setTagInputValue] = useState('');
+    const [idShowTagInput, setIdShowTagInput] = useState(null) // id заметки у которой покозывать форму ввода нового тега
 
 
 
@@ -44,6 +46,7 @@ function App() {
         setType('text');
         setPriority('medium');
         setEditingId(null);
+
     };
 
     // метод для кнопки добавить заметку
@@ -114,6 +117,61 @@ function App() {
             setChecklists(updatedChecklists);
         }
     }
+
+
+    //------------------------------------методы для удаления и добавления тэгов--------------------------------------
+
+
+    // добавить тэг к заметке
+    const handleAddTag = (id, type, tagName) => {
+        if (!tagName.trim()) return;
+        const newTag = tagName.trim().toLowerCase();
+
+        if (type === 'text') {
+            const updatedNotes = notes.map(note => {
+                if (note.id === id) {
+                    const tags = note.tags || [];
+                    if (tags.includes(newTag)) return note;
+                    return { ...note, tags: [...tags, newTag] };
+                }
+                return note;
+            });
+            setNotes(updatedNotes);
+        } else {
+            const updatedChecklists = checklists.map(c => {
+                if (c.id === id) {
+                    const tags = c.tags || [];
+                    if (tags.includes(newTag)) return c;
+                    return { ...c, tags: [...tags, newTag] };
+                }
+                return c;
+            });
+            setChecklists(updatedChecklists);
+        }
+        setIdShowTagInput(null);
+        setTagInputValue('');
+    }
+
+    // удалить тэг из заметки
+    const handleDeleteTag = (id, noteType, tagName) => {
+        if (noteType === 'text') {
+            const updatedNotes = notes.map(note => {
+                if (note.id === id) {
+                    return { ...note, tags: (note.tags || []).filter(t => t !== tagName) };
+                }
+                return note;
+            });
+            setNotes(updatedNotes);
+        } else {
+            const updatedChecklists = checklists.map(checklist => {
+                if (checklist.id === id) {
+                    return { ...checklist, tags: (checklist.tags || []).filter(t => t !== tagName) };
+                }
+                return checklist;
+            });
+            setChecklists(updatedChecklists);
+        }
+    };
 
 
     //------------------------------------методы для редактирования заметок--------------------------------------
@@ -252,7 +310,7 @@ function App() {
                 </select>
             </div>
 
-            {/* поиск по слову */}
+            {/* поиск по слову */ }
             <SearchBar search={search} setSearch={setSearch} />
 
             {/* форма для создания заметки */ }
@@ -287,13 +345,22 @@ function App() {
                         note={note}
                         onDelete={handleDeleteNote}
                         onEdit={handleStartUpdate}
+
                         onToggleTask={handleToggleTask}
                         onAddTask={handleAddTask}
                         onDeleteTask={handleDeleteTask}
                         onUpdateTask={handleUpdateTask}
+
                         onTogglePin={handleTogglePin}
                         onChangeColor={handleChangeColor}
                         onChangePriority={handleChangePriority}
+
+                        onAddTag={handleAddTag}
+                        onDeleteTag={handleDeleteTag}
+                        idShowTagInput={idShowTagInput}
+                        setIdShowTagInput={setIdShowTagInput}
+                        tagInputValue={tagInputValue}
+                        setTagInputValue={setTagInputValue}
                     />
                 ))}
             </div>
