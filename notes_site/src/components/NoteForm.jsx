@@ -1,10 +1,12 @@
 import '../styles/NoteForm.css';
 
 // компонент формы ввода для создания заметки и кнопки добавить заметку
-function NoteForm({ title, setTitle,
+function NoteForm({
+    title, setTitle,
     text, setText,
     onSubmit, onCancel,
     type, setType,
+    priority, setPriority,
     isEditing }) {
 
     const isChecklist = type === 'checklist';
@@ -54,7 +56,7 @@ function NoteForm({ title, setTitle,
                 />)
                 :  
                 (<div className="checklist-hint">
-                    {/*если чеклист то ничего*/}
+                    {/*если чеклист то ничего*/ }
                     {isEditing ? 'Задачи редактируются по отдельности' : 'Чек-лист будет создан'}
                     <br />
                     <small>
@@ -65,7 +67,21 @@ function NoteForm({ title, setTitle,
                 </div>)
             }
 
-            {/*кнопка добавить заметку или сохранить изменения/отмена */}
+            {/* выбор приоритета */ }
+            <div className="priority-selector">
+                <label className="priority-selector__label">Приоритет:</label>
+                <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="priority-selector__select"
+                >
+                    <option value="high">🟥 Высокий</option>
+                    <option value="medium">🟨 Средний</option>
+                    <option value="low">🟩 Низкий</option>
+                </select>
+            </div>
+
+            {/*кнопка (добавить заметку) или (сохранить изменения и отмена) */ }
             <div className='form__buttons'>
                 <button onClick={onSubmit} className="form__button">
                     {isEditing ? 'сохранить изменения' :'Добавить заметку' }

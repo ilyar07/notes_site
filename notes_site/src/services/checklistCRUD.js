@@ -6,7 +6,7 @@ const STORAGE_KEY = 'checklist_notes'
 
 
 // (CREATE) создать чек лист
-export const createChecklist = (title, items=[]) => {
+export const createChecklist = (title, items=[], priority) => {
     const saved = getChecklists();
     const newChecklist = {
         id: Date.now(),
@@ -15,6 +15,7 @@ export const createChecklist = (title, items=[]) => {
         items: items,
         pinned: false,
         color: '#ffffff',
+        priority: priority || 'medium', 
         createdAt: new Date().toLocaleString()
     }
 
@@ -28,11 +29,12 @@ export const getChecklists = () => {
 }
 
 // (UPDATE) обновить чек лист (заголок, весь список задач)
-export const updateChecklist = (id, title) => {
+export const updateChecklist = (id, title, priority) => {
     const saved = getChecklists();
     return saved.map((checklist) => checklist.id === id ? {
         ...checklist,
         title: title,
+        priority: priority,
         updatedAt: new Date().toLocaleString()
     } : checklist);
 }

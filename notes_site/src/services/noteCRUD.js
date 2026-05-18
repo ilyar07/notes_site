@@ -2,7 +2,7 @@ const STORAGE_KEY = 'notes';
 
 
 // (CREATE) создание заметки
-export const createNote = (title, text) => {
+export const createNote = (title, text, priority) => {
     const saved = getNotes();
     const newNote = {
         id: Date.now(),
@@ -11,6 +11,7 @@ export const createNote = (title, text) => {
         text: text,
         pinned: false,
         color: '#ffffff',
+        priority: priority || 'medium', 
         createdAt: new Date().toLocaleString()
     }
 
@@ -25,7 +26,7 @@ export const getNotes = () => {
 }
 
 // (UPDATE) обновление заметки
-export const updateNote = (id, title, text) => {
+export const updateNote = (id, title, text, priority) => {
     const saved = getNotes();
     const updatedNotes = saved.map((note) => {
         return note.id === id ?
@@ -33,6 +34,7 @@ export const updateNote = (id, title, text) => {
             ...note,
             title: title,
             text: text,
+            priority: priority,
             updatedAt: new Date().toLocaleString()
         }
         : note

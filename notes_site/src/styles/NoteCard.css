@@ -120,3 +120,44 @@
     font-size: 18px;
     display: inline-block;
 }
+
+.note-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.note-card__priority-select {
+    background: none;
+    border: 1px solid #e2e8f0;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+    .note-card__priority-select:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e0;
+    }
+
+    .note-card__priority-select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+.note-card__priority-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.note-card__priority-label {
+    font-size: 12px;
+    color: #718096;
+}

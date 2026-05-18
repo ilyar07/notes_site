@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import {
     createNote,
@@ -25,12 +25,15 @@ function App() {
     const [text, setText] = useState('');
     const [type, setType] = useState('text');
     const [search, setSearch] = useState('');
+    const [priority, setPriority] = useState('medium');
     const [editingId, setEditingId] = useState(null);
     const [notes, setNotes] = useLocalStorage('notes', []);
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
+    const formRef = useRef(null);
 
 
-    // ----------------общие методы для создания, удаления заметок, закрепления заметок и изменения цвета-------------
+
+    // ----------общие методы для создания, удаления заметок, закрепления заметок, изменения цвета и смены приоритета-----------
 
 
     //сбросить форму ввода
@@ -38,6 +41,7 @@ function App() {
         setTitle('');
         setText('');
         setType('text');
+        setPriority('medium');
         setEditingId(null);
     };
 
@@ -45,11 +49,11 @@ function App() {
     const addNote = () => {
         if (type === 'text') {
             if (!title && !text) return;
-            const updatedNotes = createNote(title, text);
+            const updatedNotes = createNote(title, text, priority);
             setNotes(updatedNotes);
         } else {
             if (!title) return;
-            const updatedChecklists = createChecklist(title, []);
+            const updatedChecklists = createChecklist(title, [], priority);
             setChecklists(updatedChecklists);
         }
         resetForm();
@@ -99,6 +103,18 @@ function App() {
         }
     }
 
+    // метод для смены приоритета
+    const handleChangePriority = (id, type, newPriority) => {
+        if (type === 'text') {
+            const updatedNotes = notes.map(note => note.id === id ? { ...note, priority: newPriority } : note);
+            setNotes(updatedNotes);
+        } else {
+            const updatedChecklists = checklists.map(c => c.id === id ? { ...c, priority: newPriority } : c);
+            setChecklists(updatedChecklists);
+        }
+    }
+
+
     //------------------------------------методы для редактирования заметок--------------------------------------
 
 
@@ -113,9 +129,11 @@ function App() {
 
     // метод для кнопки начать редактирование заметки
     const handleStartUpdate = (note) => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         setTitle(note.title);
         setText(note.type === 'text' ? note.text : '');
         setType(note.type);
+        setPriority(note.priority || 'medium');
         setEditingId(note.id);
     }
 
@@ -128,13 +146,13 @@ function App() {
     const handleUpdateNote = () => {
         if (type === 'text') {
             if (!title && !text) return;
-            const updatedNotes = updateNote(editingId, title, text);
+            const updatedNotes = updateNote(editingId, title, text, priority);
             setNotes(updatedNotes);
         } else {
             if (!title) return;
             const checklist = checklists.find(c => c.id === editingId);
             if (checklist) {
-                const updatedChecklists = updateChecklist(editingId, title);
+                const updatedChecklists = updateChecklist(editingId, title, priority);
                 setChecklists(updatedChecklists)
             }
         }
@@ -200,7 +218,7 @@ function App() {
 
     return (
         <div className="app">
-            <h1 className="app__title">Мои заметки</h1>
+            <h1 className="app__title" ref={formRef}>Мои заметки</h1>
 
             {/* поиск по слову */ }
             <SearchBar search={search} setSearch={setSearch} />
@@ -212,14 +230,16 @@ function App() {
                 text={text}
                 setText={setText}
                 type={type}             
-                setType={setType}           
+                setType={setType}
+                priority={priority}
+                setPriority={setPriority}
                 onSubmit={handleSubmit}
                 onCancel={handleCancelUpdate}
                 isEditing={!!editingId}
             />
             <hr className="divider" />
 
-            {/* счетчик заметок */}
+            {/* счетчик заметок */ }
             <div className="stats">
                 <h2 className="stats__title">
                     Список заметок
@@ -227,7 +247,7 @@ function App() {
                 </h2>
             </div>
 
-            {/* сам список заметок */}
+            {/* сам список заметок */ }
             <div className="notes-list">
                 {filteredNotes.map(note => (
                     <NoteCard
@@ -241,6 +261,7 @@ function App() {
                         onUpdateTask={handleUpdateTask}
                         onTogglePin={handleTogglePin}
                         onChangeColor={handleChangeColor}
+                        onChangePriority={handleChangePriority}
                     />
                 ))}
             </div>

@@ -49,6 +49,7 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
+
 .form__buttons {
     display: flex;
     gap: 10px;
@@ -61,6 +62,7 @@
     .form__button--cancel:hover {
         background: #4a5568;
     }
+
 .type-selector {
     display: flex;
     gap: 10px;
@@ -97,4 +99,33 @@
         display: block;
         margin-top: 8px;
         color: #a0aec0;
+    }
+
+.priority-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.priority-selector__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.priority-selector__select {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+    .priority-selector__select:focus {
+        border-color: #667eea;
     }

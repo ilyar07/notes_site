@@ -9,7 +9,8 @@ function NoteCard({ note, onEdit,
     onDeleteTask,
     onUpdateTask,
     onTogglePin,
-    onChangeColor
+    onChangeColor,
+    onChangePriority
     }) {
     const isChecklist = note.type === 'checklist';
 
@@ -28,6 +29,16 @@ function NoteCard({ note, onEdit,
 
         const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
         return brightness < 128 ? '#ffffff' : '#1a202c';
+    };
+
+    // функция для получения иконки приоритета
+    const getPriorityIcon = (priority) => {
+        switch (priority) {
+            case 'high': return '🟥';
+            case 'medium': return '🟨';
+            case 'low': return '🟩';
+            default: return '🟨';
+        }
     };
 
 
@@ -78,13 +89,13 @@ function NoteCard({ note, onEdit,
                 </div>
             </div>
 
-            {/* если текстовая заметка отображаем текст*/}
+            {/* если текстовая заметка отображаем текст*/ }
             {!isChecklist && (
 
                 <p className="note-card__text" style={{ color: getTextColor(note.color) }}>{note.text}</p>
             )}
 
-            {/* если чек лист выводим задачи*/}
+            {/* если чек лист выводим задачи*/ }
             {isChecklist && (
                 <ChecklistViewer
                     items={note.items || []}
@@ -94,11 +105,29 @@ function NoteCard({ note, onEdit,
                     onUpdateTask={(taskId, newText) => onUpdateTask(note.id, taskId, newText)}
                 />
             )}
-            {/*время создания/изменения*/}
-            <time className="note-card__date" style={{ color: getTextColor(note.color) }}>
-                {note.createdAt}
-                {note.updatedAt && (` Изменено: ${note.updatedAt}`)}
-            </time>
+
+            <div className="note-card__footer">
+                {/*время создания/изменения*/ }
+                <time className="note-card__date" style={{ color: getTextColor(note.color) }}>
+                    {note.createdAt}
+                    {note.updatedAt && (` Изменено: ${note.updatedAt}`)}
+                </time>
+                {/* приоритет */ }
+                <div className="note-card__priority-wrapper">
+                    <span className="note-card__priority-label" style={{ color: getTextColor(note.color) }}>Приоритет:</span>
+                    <select
+                        value={note.priority || 'medium'}
+                        onChange={(e) => onChangePriority(note.id, note.type, e.target.value)}
+                        className="note-card__priority-select"
+                        title="Изменить приоритет"
+                        style={{ color: getTextColor(note.color) }}
+                    >
+                        <option value="high">🟥 Высокий</option>
+                        <option value="medium">🟨 Средний</option>
+                        <option value="low">🟩 Низкий</option>
+                    </select>
+                </div>
+            </div>
         </div>
     )
 }
