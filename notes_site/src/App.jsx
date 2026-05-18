@@ -25,11 +25,12 @@ function App() {
     const [text, setText] = useState('');
     const [type, setType] = useState('text');
     const [search, setSearch] = useState('');
-    const [priority, setPriority] = useState('medium');
+    const [priority, setPriority] = useState('medium'); // high, medium, low
     const [editingId, setEditingId] = useState(null);
     const [notes, setNotes] = useLocalStorage('notes', []);
     const [checklists, setChecklists] = useLocalStorage('checklist_notes', []);
     const formRef = useRef(null);
+    const [sortBy, setSortBy] = useState('date-desc'); // date-desc, date-asc, priority-high, priority-low
 
 
 
@@ -189,22 +190,16 @@ function App() {
     }
 
 
-    //-------------------------------------------фильтрация---------------------------------------------------------
+    //-------------------------------------------фильтрация и сортировка---------------------------------------------------------
 
 
-    // заметки отфлитрованые по содержанию строки search и по закрепу
+    // заметки отфлитрованые по содержанию строки search и по выбраному порядку (закрепленные всегда первые)
     const getFilteredNotes = () => {
         const allNotes = [...notes, ...checklists];
         const validNotes = allNotes.filter(note => note !== null);
         const lowerSearch = search.toLowerCase();
 
-        const sortedNotes = validNotes.sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;  
-            if (!a.pinned && b.pinned) return 1; 
-            return b.id - a.id; 
-        });
-
-        return sortedNotes.filter(note => {
+        let filtered = validNotes.filter(note => {
             if (note.type === 'text') {
                 return note.title?.toLowerCase().includes(lowerSearch) ||
                     note.text?.toLowerCase().includes(lowerSearch);
@@ -212,6 +207,28 @@ function App() {
                 return note.title?.toLowerCase().includes(lowerSearch);
             }
         });
+
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+
+        filtered.sort((a, b) => {
+            // сначала закреплённые
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+
+            // потом по выбранной сортировке
+            if (sortBy === 'priority-high') {
+                return (priorityOrder[b.priority || 'medium'] || 0) - (priorityOrder[a.priority || 'medium'] || 0);
+            } else if (sortBy === 'priority-low') {
+                return (priorityOrder[a.priority || 'medium'] || 0) - (priorityOrder[b.priority || 'medium'] || 0);
+            } else if (sortBy === 'date-desc') {
+                return b.id - a.id;
+            } else if (sortBy === 'date-asc') {
+                return a.id - b.id;
+            }
+            return b.id - a.id;
+        });
+
+        return filtered;
     };
 
     const filteredNotes = getFilteredNotes();
@@ -220,7 +237,22 @@ function App() {
         <div className="app">
             <h1 className="app__title" ref={formRef}>Мои заметки</h1>
 
-            {/* поиск по слову */ }
+            {/* выбор фильтрации */ }
+            <div className="sort-section">
+                <label className="sort-label">Сортировка:</label>
+                <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="sort-select"
+                >
+                    <option value="date-desc">📅 Сначала новые</option>
+                    <option value="date-asc">📅 Сначала старые</option>
+                    <option value="priority-high">🟥 Приоритет (высокий → низкий)</option>
+                    <option value="priority-low">🟩 Приоритет (низкий → высокий)</option>
+                </select>
+            </div>
+
+            {/* поиск по слову */}
             <SearchBar search={search} setSearch={setSearch} />
 
             {/* форма для создания заметки */ }

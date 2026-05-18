@@ -71,3 +71,37 @@ body {
         color: white;
         font-size: 1rem;
     }
+
+.sort-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 20px;
+    margin-top: 4px;
+}
+
+.sort-label {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+    .sort-select:focus {
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+    }
+
+    .sort-select:hover {
+        background: #f7fafc;
+    }
