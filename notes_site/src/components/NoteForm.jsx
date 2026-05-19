@@ -48,12 +48,18 @@ function NoteForm({
 
             {/*если обычная заметка отображаем поле для ввода текста*/ }
             {!isChecklist ? (
-                <textarea
-                    placeholder="Текст"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    className="form__textarea"
-                />)
+                <>
+                    <textarea
+                        placeholder="Текст"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        className="form__textarea"
+                    />
+                    <div className="markdown-hint">
+                        <small>Поддерживается Markdown: # заголовок, **жирный**, - список, [ссылка](url)</small>
+                    </div>
+                </>
+                )
                 :  
                 (<div className="checklist-hint">
                     {/*если чеклист то ничего*/ }

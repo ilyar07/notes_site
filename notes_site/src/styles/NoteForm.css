@@ -129,3 +129,11 @@
     .priority-selector__select:focus {
         border-color: #667eea;
     }
+
+.markdown-hint {
+    margin-top: -8px;
+    margin-bottom: 16px;
+    font-size: 11px;
+    color: #a0aec0;
+    text-align: left;
+}

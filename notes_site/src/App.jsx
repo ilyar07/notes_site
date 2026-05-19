@@ -12,6 +12,7 @@ import SearchBar from './components/SearchBar';
 import NoteForm from './components/NoteForm';
 import Stats from './components/Stats';
 import NotesList from './components/NotesList';
+import ViewToggle from './components/ViewToggle';
 import './styles/App.css';
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
     const formRef = useRef(null);
     const [tagInputValue, setTagInputValue] = useState('');
     const [idShowTagInput, setIdShowTagInput] = useState(null) // id заметки у которой покозывать форму ввода нового тега
+    const [viewMode, setViewMode] = useState('list'); // 'list' или 'grid'
+
 
     // хуки
     const filters = useFilters();
@@ -77,6 +80,9 @@ function App() {
         <div className="app">
             <h1 className="app__title" ref={formRef}>Мои заметки</h1>
 
+            {/* переключатель режима отображения */}
+            <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+
             {/* выбор фильтрации */}
             <FiltersPanel
                 showOnlyPinned={filters.showOnlyPinned}
@@ -96,7 +102,7 @@ function App() {
 
             {/* поиск по слову */}
             <SearchBar search={filters.search} setSearch={filters.setSearch} />
-
+            
             {/* форма для создания заметки */}
             <NoteForm
                 title={title}
@@ -135,6 +141,7 @@ function App() {
                 setIdShowTagInput={setIdShowTagInput}
                 tagInputValue={tagInputValue}
                 setTagInputValue={setTagInputValue}
+                viewMode={viewMode}
             />
         </div>
     )

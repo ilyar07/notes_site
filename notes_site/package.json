@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "marked": "^18.0.4",
+    "masonry-layout": "^4.2.2",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-masonry-css": "^1.0.16"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

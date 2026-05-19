@@ -1,4 +1,4 @@
-import { createNote, deleteNote, updateNote } from '../services/noteCRUD';
+import { createNote, deleteNote, updateNote as updateNoteService } from '../services/noteCRUD';
 import { createChecklist, deleteChecklist, updateChecklist } from '../services/checklistCRUD';
 
 // хук для всех CRUD операций с заметками
@@ -33,11 +33,11 @@ export const useNotes = (notes, setNotes, checklists, setChecklists) => {
             const updatedNotes = notes.map(note => note.id === id ? { ...note, pinned: !note.pinned } : note);
             setNotes(updatedNotes);
         } else {
-            const updatedChecklist = checklists.map(checklist => checklist.id === id ? {
+            const updatedChecklists = checklists.map(checklist => checklist.id === id ? {
                 ...checklist,
                 pinned: !checklist.pinned
             } : checklist)
-            setChecklists(updatedChecklist);
+            setChecklists(updatedChecklists);
         }
     };
 
@@ -100,7 +100,7 @@ export const useNotes = (notes, setNotes, checklists, setChecklists) => {
     const updateNote = (editingId, type, title, text, priority) => {
         if (type === 'text') {
             if (!title && !text) return;
-            const updatedNotes = updateNote(editingId, title, text, priority);
+            const updatedNotes = updateNoteService(editingId, title, text, priority);
             setNotes(updatedNotes);
         } else {
             if (!title) return;

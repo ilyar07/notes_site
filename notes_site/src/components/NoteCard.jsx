@@ -1,4 +1,5 @@
 import ChecklistViewer from './ChecklistViewer';
+import { marked } from 'marked';
 import '../styles/NoteCard.css';
 
 // компонент заметки
@@ -101,8 +102,11 @@ function NoteCard({
 
             {/* если текстовая заметка отображаем текст*/ }
             {!isChecklist && (
-
-                <p className="note-card__text" style={{ color: getTextColor(note.color) }}>{note.text}</p>
+                <div
+                    className="note-card__text"
+                    style={{ color: getTextColor(note.color) }}
+                    dangerouslySetInnerHTML={{ __html: marked(note.text) }}
+                />
             )}
 
             {/* если чек лист выводим задачи*/ }

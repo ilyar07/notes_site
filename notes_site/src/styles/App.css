@@ -54,24 +54,6 @@ body {
     font-weight: 600;
 }
 
-.notes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-bottom: 40px;
-}
-
-    .notes-list:empty::after {
-        content: "Заметок еще нет";
-        display: block;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 48px;
-        text-align: center;
-        color: white;
-        font-size: 1rem;
-    }
-
 .filters-panel {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
@@ -248,3 +230,68 @@ body {
     .clear-tags-btn:hover {
         background: rgba(229, 62, 62, 0.8);
     }
+
+.view-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+}
+
+.view-toggle__btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.view-toggle__btn--active {
+    background: white;
+    color: #667eea;
+}
+
+.view-toggle__btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.notes-list--list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notes-list--grid-container {
+    display: flex;
+    justify-content: center;
+}
+
+.notes-list--grid {
+    margin: 0 auto;
+}
+
+    .notes-list--grid .note-card {
+        width: 380px;
+        margin-bottom: 20px;
+    }
+
+@media (max-width: 850px) {
+    .notes-list--grid .note-card {
+        width: 340px;
+    }
+}
+
+@media (max-width: 750px) {
+    .notes-list--grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .notes-list--grid .note-card {
+            width: 100%;
+        }
+}
