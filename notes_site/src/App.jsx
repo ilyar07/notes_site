@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import {
     createNote,
@@ -36,10 +36,12 @@ function App() {
     const [idShowTagInput, setIdShowTagInput] = useState(null) // id заметки у которой покозывать форму ввода нового тега
     const [showOnlyPinned, setShowOnlyPinned] = useState(false);
     const [filterType, setFilterType] = useState('all'); // 'all', 'text', 'checklist'
+    const [selectedTags, setSelectedTags] = useState([]); 
+    const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false); // показывать ли выпадающее окно со всеми тегами
 
 
 
-    // ----общие методы для создания, удаления заметок, закрепления заметок, изменения цвета, смены приоритета, дублирования------
+    // --------------общие методы для создания, удаления заметок, закрепления заметок, изменения цвета, смены приоритета, дублирования------
 
 
     //сбросить форму ввода
@@ -85,11 +87,11 @@ function App() {
             const updatedNotes = notes.map(note => note.id === id ? { ...note, pinned: !note.pinned } : note);
             setNotes(updatedNotes);
         } else {
-            const updatedChecklist = checklists.map(checklist => checklist.id === id ? {
+            const updatedChecklists = checklists.map(checklist => checklist.id === id ? {
                 ...checklist,
                 pinned: !checklist.pinned
             } : checklist)
-            setChecklists(updatedChecklist);
+            setChecklists(updatedChecklists);
         }
     }
 
@@ -148,7 +150,7 @@ function App() {
         }
     };
 
-    //------------------------------------методы для удаления и добавления тэгов--------------------------------------
+    //------------------------------------методы для удаления и добавления тэгов и другие действия с ними--------------------------------------
 
 
     // добавить тэг к заметке
@@ -200,6 +202,30 @@ function App() {
             });
             setChecklists(updatedChecklists);
         }
+    };
+
+    // получить все существующие тэги
+    const getAllTags = () => {
+        const allNotes = [...notes, ...checklists];
+        const tagsSet = new Set();
+        allNotes.forEach(note => {
+            note.tags?.forEach(tag => tagsSet.add(tag));
+        });
+        return Array.from(tagsSet);
+    }
+
+    // выбрать тэг
+    const toggleTag = (tag) => {
+        setSelectedTags(prev =>
+            prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+        );
+    };
+
+    // функция отображения выбранных тэгов
+    const getDisplayTags = () => {
+        if (selectedTags.length === 0) return 'Все теги';
+        if (selectedTags.length <= 3) return selectedTags.join(', ');
+        return `${selectedTags.slice(0, 3).join(', ')}... (+${selectedTags.length - 3})`;
     };
 
 
@@ -287,6 +313,14 @@ function App() {
         const validNotes = allNotes.filter(note => note !== null);
         const lowerSearch = search.toLowerCase();
 
+        const parseDate = (dateStr) => {
+            if (!dateStr) return new Date(0);
+            const [datePart, timePart] = dateStr.split(', ');
+            const [day, month, year] = datePart.split('.');
+            const [hours, minutes, seconds] = timePart.split(':');
+            return new Date(year, month - 1, day, hours, minutes, seconds);
+        };
+
         let filtered = validNotes.filter(note => {
             if (note.type === 'text') {
                 return note.title?.toLowerCase().includes(lowerSearch) ||
@@ -304,6 +338,13 @@ function App() {
         // фильтрация по типу
         if (filterType !== 'all') {
             filtered = filtered.filter(note => note.type === filterType);
+        }
+
+        // филтрация по тэгам
+        if (selectedTags.length > 0) {
+            filtered = filtered.filter(note =>
+                note.tags?.some(tag => selectedTags.includes(tag))
+            );
         }
 
         const priorityOrder = { high: 3, medium: 2, low: 1 };
@@ -327,24 +368,10 @@ function App() {
                 return a.id - b.id;
             // по дате изменения
             } else if (sortBy === 'updated-desc') {
-                const parseDate = (dateStr) => {
-                    if (!dateStr) return new Date(0);
-                    const [datePart, timePart] = dateStr.split(', ');
-                    const [day, month, year] = datePart.split('.');
-                    const [hours, minutes, seconds] = timePart.split(':');
-                    return new Date(year, month - 1, day, hours, minutes, seconds);
-                };
                 const dateA = a.updatedAt ? parseDate(a.updatedAt) : parseDate(a.createdAt);
                 const dateB = b.updatedAt ? parseDate(b.updatedAt) : parseDate(b.createdAt);
                 return dateB - dateA;
             } else if (sortBy === 'updated-asc') {
-                const parseDate = (dateStr) => {
-                    if (!dateStr) return new Date(0);
-                    const [datePart, timePart] = dateStr.split(', ');
-                    const [day, month, year] = datePart.split('.');
-                    const [hours, minutes, seconds] = timePart.split(':');
-                    return new Date(year, month - 1, day, hours, minutes, seconds);
-                };
                 const dateA = a.updatedAt ? parseDate(a.updatedAt) : parseDate(a.createdAt);
                 const dateB = b.updatedAt ? parseDate(b.updatedAt) : parseDate(b.createdAt);
                 return dateA - dateB;
@@ -414,6 +441,7 @@ function App() {
                     </div>
                 </div>
 
+                {/* сортировка */}
                 <div className="sort-row">
                     <span className="sort-label">🔽🔼 Сортировка:</span>
                     <select
@@ -430,6 +458,45 @@ function App() {
                         <option value="priority-high">🟥 Приоритет (высокий → низкий)</option>
                         <option value="priority-low">🟩 Приоритет (низкий → высокий)</option>
                     </select>
+                </div>
+
+                {/* фильтрация по тэгам */}
+
+                <div className="filter-tags-row">
+                    <div className="filter-tags">
+                        <span className="filter-label">🏷️ Теги:</span>
+                        <div className="tag-dropdown-container">
+                            <button
+                                type="button"
+                                className="tag-dropdown-trigger"
+                                onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
+                            >
+                                🏷️ {getDisplayTags()} ▼
+                            </button>
+                            {isTagDropdownOpen && (
+                                <div className="tag-dropdown">
+                                    {getAllTags().map(tag => (
+                                        <label key={tag} className="tag-option">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedTags.includes(tag)}
+                                                onChange={() => toggleTag(tag)}
+                                            />
+                                            🏷️ {tag}
+                                        </label>
+                                    ))}
+                                    {getAllTags().length === 0 && (
+                                        <div className="tag-dropdown-empty">Нет тегов</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {selectedTags.length > 0 && (
+                        <button className="clear-tags-btn" onClick={() => setSelectedTags([])}>
+                            ✕ Очистить
+                        </button>
+                    )}
                 </div>
             </div>
 
