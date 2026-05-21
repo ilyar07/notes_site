@@ -19,7 +19,10 @@ function NotesList({
     idShowTagInput,
     setIdShowTagInput,
     tagInputValue,
-    setTagInputValue
+    setTagInputValue,
+
+    onShare,
+    onShowComments
 }) {
     const gridRef = useRef(null);
     const masonryRef = useRef(null);
@@ -73,6 +76,9 @@ function NotesList({
                         setIdShowTagInput={setIdShowTagInput}
                         tagInputValue={tagInputValue}
                         setTagInputValue={setTagInputValue}
+
+                        onShare={onShare}
+                        onShowComments={onShowComments}
                     />
                 ))}
             </div>
@@ -102,6 +108,9 @@ function NotesList({
                         setIdShowTagInput={setIdShowTagInput}
                         tagInputValue={tagInputValue}
                         setTagInputValue={setTagInputValue}
+
+                        onShare={onShare}
+                        onShowComments={onShowComments}
                     />
                 ))}
             </div>

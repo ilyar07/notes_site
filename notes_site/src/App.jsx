@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import { useNotes } from './hooks/useNotes';
 import { useFilters } from './hooks/useFilters';
@@ -13,6 +13,7 @@ import NoteForm from './components/NoteForm';
 import Stats from './components/Stats';
 import NotesList from './components/NotesList';
 import ViewToggle from './components/ViewToggle';
+import ShareModal from './components/ShareModal';
 import './styles/App.css';
 
 function App() {
@@ -27,6 +28,10 @@ function App() {
     const [tagInputValue, setTagInputValue] = useState('');
     const [idShowTagInput, setIdShowTagInput] = useState(null) // id заметки у которой покозывать форму ввода нового тега
     const [viewMode, setViewMode] = useState('list'); // 'list' или 'grid'
+
+    const [shareMessage, setShareMessage] = useState('');
+    const [sharedNote, setSharedNote] = useState(null);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
 
     // хуки
@@ -68,6 +73,54 @@ function App() {
     // метод для кнопки отменить редактирование заметки
     const handleCancelUpdate = () => {
         resetForm();
+    };
+
+    // функция для копирования ссылки
+    const generateShareLink = (noteId) => {
+        const encodedId = btoa(String(noteId)); // кодируем ID в base64
+        const url = `${window.location.origin}${window.location.pathname}?share=${encodedId}`;
+
+        navigator.clipboard.writeText(url).then(() => {
+            setShareMessage('✅ Ссылка скопирована!');
+            setTimeout(() => setShareMessage(''), 2000);
+        }).catch(() => {
+            setShareMessage('❌ Ошибка копирования');
+            setTimeout(() => setShareMessage(''), 2000);
+        });
+    };
+
+    // Проверяем URL при загрузке страницы
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const encodedId = params.get('share');
+        if (encodedId) {
+            try {
+                const noteId = parseInt(atob(encodedId));
+                // Сохраняем ID, а заметку найдём позже
+                window.pendingShareId = noteId;
+            } catch (e) {
+                console.error('Ошибка декодирования ссылки', e);
+            }
+        }
+    }, []);
+
+    // Когда данные загрузятся, проверяем есть ли ожидающий ID
+    useEffect(() => {
+        if (window.pendingShareId) {
+            const allNotes = [...notes, ...checklists];
+            const note = allNotes.find(n => n.id === window.pendingShareId);
+            if (note) {
+                setSharedNote(note);
+                setIsShareModalOpen(true);
+                delete window.pendingShareId;
+            }
+        }
+    }, [notes, checklists]);
+
+    // для открытия окна коментов
+    const handleShowComments = (note) => {
+        setSharedNote(note);
+        setIsShareModalOpen(true);
     };
 
     // заметки отфлитрованые по содержанию строки search и по выбраному порядку (закрепленные всегда первые)
@@ -142,7 +195,29 @@ function App() {
                 tagInputValue={tagInputValue}
                 setTagInputValue={setTagInputValue}
                 viewMode={viewMode}
+
+                onShare={generateShareLink}
+                onShowComments={handleShowComments}
             />
+
+            {shareMessage && (
+                <div className="share-message">
+                    {shareMessage}
+                </div>
+            )}
+
+            {isShareModalOpen && (
+                <ShareModal
+                    note={sharedNote}
+                    onClose={() => {
+                        setIsShareModalOpen(false);
+                        setSharedNote(null);
+                        // убираем параметр из URL
+                        window.history.replaceState({}, '', window.location.pathname);
+                    }}
+                />
+            )}
+
         </div>
     )
 }

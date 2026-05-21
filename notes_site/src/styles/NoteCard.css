@@ -11,16 +11,22 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
+.note-card__header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
 .note-card__title {
     font-size: 1.25rem;
     font-weight: 600;
+    margin-top: 8px;
     margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-    flex: 1;
 }
 
 .note-card__text {
@@ -38,21 +44,11 @@
     margin-top: 8px;
 }
 
-.note-card__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 15px;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 8px;
-}
-
 .note-card__actions {
     display: flex;
     gap: 5px;
-    flex-shrink: 0;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
     .note-card__actions button,
@@ -315,5 +311,55 @@
     }
 
     .note-card__duplicate:active {
+        transform: scale(0.95);
+    }
+
+.note-card__share {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #718096;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+}
+
+    .note-card__share:hover {
+        background: #e2e8f0;
+        transform: scale(1.1);
+    }
+
+    .note-card__share:active {
+        transform: scale(0.95);
+    }
+
+.note-card__comments {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #718096;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+}
+
+    .note-card__comments:hover {
+        background: #e2e8f0;
+        transform: scale(1.1);
+    }
+
+    .note-card__comments:active {
         transform: scale(0.95);
     }

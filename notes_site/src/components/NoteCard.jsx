@@ -23,7 +23,10 @@ function NoteCard({
     idShowTagInput,
     setIdShowTagInput,
     tagInputValue,
-    setTagInputValue
+    setTagInputValue,
+
+    onShare,
+    onShowComments   
 
     }) {
     const isChecklist = note.type === 'checklist';
@@ -47,18 +50,9 @@ function NoteCard({
 
     return (
         <div key={note.id} className="note-card" style={{ backgroundColor: note.color || '#ffffff' }}>
-
-            {/*заголовок*/}
-            <div className="note-card__header">  
-                <h3 className="note-card__title" style={{ color: getTextColor(note.color) }}>
-                    {note.pinned && '📌 '}
-                    {isChecklist ? '☑️ ' : '📝 '}
-                    {note.title || 'Без заголовка'}
-                </h3>
-
-                {/*кнопки удалить, редактировать, запинить, выбрать цвет, дублировать*/}
+            <div className="note-card__header">
+                {/*кнопки удалить, редактировать, запинить, выбрать цвет, дублировать и поделиться*/}
                 <div className='note-card__actions'>
-
                     <button
                         onClick={() => onTogglePin(note.id, note.type)}
                         className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
@@ -97,7 +91,29 @@ function NoteCard({
                         title='Удалить'
                     >🗑️</button>
 
+                    <button
+                        onClick={() => onShowComments(note)}
+                        className="note-card__comments"
+                        title="Комментарии"
+                    >
+                        💬
+                    </button>
+
+                    <button
+                        onClick={() => onShare(note.id)}
+                        className="note-card__share"
+                        title="Поделиться"
+                    >
+                        🌐
+                    </button>
                 </div>
+
+                {/*заголовок*/}
+                <h3 className="note-card__title" style={{ color: getTextColor(note.color) }}>
+                    {note.pinned && '📌 '}
+                    {isChecklist ? '☑️ ' : '📝 '}
+                    {note.title || 'Без заголовка'}
+                </h3>
             </div>
 
             {/* если текстовая заметка отображаем текст*/ }
